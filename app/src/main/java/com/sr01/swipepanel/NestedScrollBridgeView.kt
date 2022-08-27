@@ -40,8 +40,11 @@ class NestedScrollBridgeView @JvmOverloads constructor(
             }
 
             if (isScrolling) {
-                dispatchNestedPreScroll(distanceX.toInt(), distanceY.toInt(), null, null, ViewCompat.TYPE_TOUCH)
-                dispatchNestedScroll(0, 0, distanceX.toInt(), distanceY.toInt(), null, ViewCompat.TYPE_TOUCH, IntArray(2))
+                val consumed = IntArray(2)
+                dispatchNestedPreScroll(distanceX.toInt(), distanceY.toInt(), consumed, null, ViewCompat.TYPE_TOUCH)
+                dispatchNestedScroll(0, 0,
+                    (distanceX - consumed[0]).toInt(),
+                    (distanceY - consumed[1]).toInt(), null, ViewCompat.TYPE_TOUCH, IntArray(2))
             }
             return true
         }
@@ -57,8 +60,8 @@ class NestedScrollBridgeView @JvmOverloads constructor(
             }
 
             if (isFling) {
-                dispatchNestedPreFling(velocityX, velocityY)
-                dispatchNestedFling(velocityX, velocityY, false)
+                val consumed = dispatchNestedPreFling(velocityX, velocityY)
+                dispatchNestedFling(velocityX, velocityY, consumed)
             }
             return true
         }
